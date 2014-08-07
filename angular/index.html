@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body ng-app="App">
+  
+
+    <div class="container" ng-controller="CrudCtrl">
+
+      <!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a href="../" class="navbar-brand">Bootstrap</a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav">
+                <li>
+                  <a ng-click="displayForm(true)" ng-hide="showForm">Tambah Data</a>
+                  <a ng-click="displayForm(false)" ng-show="showForm">Batal</a>
+                </li>
+              </ul>
+            </nav>
+        </div><!--/.container-fluid -->
+      </div>
+      
+        <span class="alert alert-danger pull-right alert-dismissible" ng-show="error">{{ error }}</span>
+        <span class="alert alert-success pull-right alert-dismissible" ng-show="success">{{ success }}</span>
+        
+      <!-- Main component for a primary marketing message or call to action -->
+        <form role="form" ng-show="showForm">
+          <div class="form-group">
+            <label for="nama">Nama</label>
+            <input type="text" class="form-control" id="nama" placeholder="Nama" ng-model="AddProfile.nama_customer">
+          </div>
+          <div class="form-group">
+            <label for="alamat">Alamat</label>
+            <input type="text" class="form-control" id="alamat" placeholder="alamat" ng-model="AddProfile.alamat">
+          </div>
+          <div class="form-group">
+            <label for="telepon">Telepon</label>
+            <input type="text" class="form-control" id="telepon" placeholder="telepon" ng-model="AddProfile.telepon">
+          </div>
+          <div class="form-group">
+            <label for="tmp_lahir">Tempat Lahir</label>
+            <input type="text" class="form-control" id="tmp_lahir" placeholder="tempat lahir" ng-model="AddProfile.tempat_lahir">
+          </div>
+          <div class="form-group">
+            <label for="tgl_lahir">Tgl Lahir</label>
+            <input type="date" class="form-control" id="tgl_lahir" placeholder="Tgl Lahir" ng-model="AddProfile.tgl_lahir">
+          </div>
+          <button type="submit" class="btn btn-default" ng-click="post()">Simpan</button>
+        </form>
+        
+      <table class="table table-striped" ng-hide="showForm">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="profile in Profiles">
+          <td ng-bind="$index+1"></td>
+          <td>
+             <form role="form" ng-show="profile.editable">
+              <div class="form-group">
+                <label for="nama">Nama</label>
+                <input type="text" class="form-control" id="nama" placeholder="Nama" ng-model="profile.nama_customer">
+              </div>
+              <div class="form-group">
+                <label for="alamat">Alamat</label>
+                <input type="text" class="form-control" id="alamat" placeholder="alamat" ng-model="profile.alamat">
+              </div>
+              <div class="form-group">
+                <label for="telepon">Telepon</label>
+                <input type="text" class="form-control" id="telepon" placeholder="telepon" ng-model="profile.telepon">
+              </div>
+              <div class="form-group">
+                <label for="tmp_lahir">Tempat Lahir</label>
+                <input type="text" class="form-control" id="tmp_lahir" placeholder="tempat lahir" ng-model="profile.tempat_lahir">
+              </div>
+              <div class="form-group">
+                <label for="tgl_lahir">Tgl Lahir</label>
+                <input type="date" class="form-control" id="tgl_lahir" placeholder="Tgl Lahir" ng-model="profile.tgl_lahir">
+              </div>
+            </form>
+            <span ng-hide="profile.editable">{{ profile.nama_customer }}</span>
+          </td>
+          <td>
+            <span ng-hide="profile.editable">{{ profile.alamat }}</span>
+          </td>
+          <td>
+            <span class="btn btn-sm btn-primary" ng-click="edit($index)" ng-hide="profile.editable">Edit</span>
+            <span class="btn btn-sm btn-primary" ng-click="save($index, profile.id_customer)" ng-show="profile.editable">Save</span>
+            <span class="btn btn-sm btn-primary" ng-click="delete($index, profile)">Delete</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    </div> <!-- /container -->
+        
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.angularjs.org/1.2.16/angular.js"></script>
+    <script src="script.js"></script>
+    <script src="crud.service.js"></script>
+  </body>
+</html>

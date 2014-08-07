@@ -8,8 +8,8 @@ $app = new \Slim\Slim();
 function getConnection() {
     $dbhost="127.0.0.1";
     $dbuser="root";
-    $dbpass="";
-    $dbname="db_customer";
+    $dbpass="gedelumbung";
+    $dbname="crud_slim";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;
@@ -33,15 +33,23 @@ $authKey = function ($route) {
 
 $app->get('/customer/:key/', $authKey, function () use ($app)  {
     $sql = "select * FROM tbl_customer";
+        
+    $response = $app->response();
+    $response['Content-Type'] = 'application/json';
+    $response['X-Powered-By'] = 'Gede Lumbung';
+    
     try {
         $db = getConnection();
         $stmt = $db->query($sql);
         $data = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-        $app->response()->header('Content-Type', 'application/json');
-        echo '{"customer": ' . json_encode($data) . '}';
+        
+        $response->status(200);
+        $response->body(json_encode(array('customer' => $data)));
+        
     } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
+        $response->status(500);
+        $response->body(json_encode(array('reasons' => $e->getMessage())));
     }
 });
 
@@ -63,6 +71,11 @@ $app->get('/customer/:key/:id/', $authKey, function ($key,$id) use ($app) {
 });
 
 $app->post('/customer/:key/', $authKey, function () use ($app)  {
+        
+    $response = $app->response();
+    $response['Content-Type'] = 'application/json';
+    $response['X-Powered-By'] = 'Gede Lumbung';
+    
   try {
     $request = $app->request();
     $input = json_decode($request->getBody());
@@ -79,15 +92,21 @@ $app->post('/customer/:key/', $authKey, function () use ($app)  {
     $stmt->execute();
     $input->id_customer = $db->lastInsertId();
     $db = null;
-    echo json_encode($input);
+        
+    $response->status(200);
+    $response->body(json_encode($input));
 
   } catch (Exception $e) {
-    $app->response()->status(400);
-    $app->response()->header('X-Status-Reason', $e->getMessage());
+    $response->status(400);
+    $response->body(json_encode(array('reasons' => 'All fields are required.')));
   }
 });
 
 $app->put('/customer/:key/:id/', $authKey, function ($key,$id) use ($app)  {
+        
+    $response = $app->response();
+    $response['Content-Type'] = 'application/json';
+    $response['X-Powered-By'] = 'Gede Lumbung';
   try {
     $request = $app->request();
     $input = json_decode($request->getBody());
@@ -103,15 +122,21 @@ $app->put('/customer/:key/:id/', $authKey, function ($key,$id) use ($app)  {
 
     $stmt->execute();
     $db = null;
-    echo json_encode($input);
+        
+    $response->status(200);
+    $response->body(json_encode($input));
 
   } catch (Exception $e) {
-    $app->response()->status(400);
-    $app->response()->header('X-Status-Reason', $e->getMessage());
+    $response->status(400);
+    $response->body(json_encode(array('reasons' => 'All fields are required.')));
   }
 });
 
 $app->delete('/customer/:key/:id/', $authKey, function ($key,$id) use ($app) {
+        
+    $response = $app->response();
+    $response['Content-Type'] = 'application/json';
+    $response['X-Powered-By'] = 'Gede Lumbung';
   try {
     $sql = "DELETE FROM tbl_customer WHERE id_customer='".$id."'";
     $db = getConnection();
@@ -119,10 +144,13 @@ $app->delete('/customer/:key/:id/', $authKey, function ($key,$id) use ($app) {
     $stmt->bindParam("id", $id);
     $stmt->execute();
     $db = null;
+        
+    $response->status(410);
+    $response->body(json_encode(array('reasons' => 'Gone')));
 
   } catch (Exception $e) {
-    $app->response()->status(400);
-    $app->response()->header('X-Status-Reason', $e->getMessage());
+    $response->status(500);
+    $response->body(json_encode(array('reasons' => 'Something error.')));
   }
 });
 
